@@ -1,0 +1,48 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "iso_url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-install-amd64-minimal/install-amd64-minimal-20180320T214502Z.iso",
+      "iso_checksum": "f3fc5dec5b4bdb9a4c632619c40471177526020c48ddef8472eec71387e7619f2bb73aa0d1d0153c56ce2d50c0f00d46bb9ed629dfb9009c2a5708460fcbf1c0",
+      "iso_checksum_type": "sha512",
+      "disk_size": 20000,
+      "guest_additions_mode": "attach",
+      "guest_os_type": "Linux_64",
+      "vm_name": "gentoo",
+      "keep_registered": true,
+      "headless": false,
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "shutdown_command": "shutdown -P now",
+      "shutdown_timeout": "5m",
+      "boot_wait": "4s",
+      "hard_drive_interface": "sata",
+      "boot_command": [
+        "<enter><wait5>41<enter>",
+        "<wait10>rc-service sshd start <enter>",
+	"echo -e \"packer\\npacker\n\" | passwd root<enter>",
+	"top<enter>"
+      ],
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "3072"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "4"
+        ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "install.sh"
+    }
+  ]
+}
